@@ -159,7 +159,7 @@
     <xs:element name="realname" type="xs:string"/>
     <xs:element name="role" type="xs:string"/>
     <xs:element name="label">
-        <xs:complexType>
+        <xs:complexType mixed="true">
             <xs:sequence>
                 <xs:element ref="images"/>
                 <xs:element ref="name"/>
@@ -170,6 +170,7 @@
                 <xs:element ref="sublabels"/>
             </xs:sequence>
             <xs:attribute name="catno"/>
+            <xs:attribute name="name"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="parentLabel" type="xs:string"/>

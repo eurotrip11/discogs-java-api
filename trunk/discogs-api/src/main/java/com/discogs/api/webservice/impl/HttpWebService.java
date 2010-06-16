@@ -20,6 +20,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +36,17 @@ public class HttpWebService extends DefaultWebService {
 
     public HttpWebService() {
         httpClient = new HttpClient();
-        System.getProperties().setProperty("httpclient.useragent", "Discogs Java Api v. 1.0 - ");
+        initConfiguration();
     }
 
     public HttpWebService(HttpClient httpClient) {
         this.httpClient = httpClient;
+    }
+
+    private void initConfiguration(){
+        HttpClientParams hcp = new HttpClientParams();
+        hcp.setParameter(HttpClientParams.USER_AGENT, "Discogs Java Api v1.0");
+        httpClient.setParams(hcp);
     }
 
     @Override
@@ -103,5 +110,13 @@ public class HttpWebService extends DefaultWebService {
             logger.error(e.getMessage());
         }
         return resp;
+    }
+
+    public HttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 }
