@@ -8,8 +8,13 @@ import com.discogs.api.exception.JDiscogsException;
 import com.discogs.api.model.Artist;
 import com.discogs.api.model.Label;
 import com.discogs.api.model.Release;
-import com.discogs.api.model.Track;
+import com.discogs.api.webservice.impl.HttpWebService;
 import java.util.List;
+import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.ProxyClient;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 
 /**
  *
@@ -26,7 +31,12 @@ public class Test {
             System.out.println(release.getTitle());
             Label label = query.getLabel("Svek");
             System.out.println(label.getName());*/
-
+            HttpClient client = new HttpClient();
+            HttpWebService ser =  (HttpWebService) query.getWebService();
+//            HostConfiguration configuration = new HostConfiguration();
+//            configuration.setProxy("218.248.44.216", 8080);
+//            client.setHostConfiguration(configuration);
+            ser.setHttpClient(client);
             List<Artist> artists = query.findArtists("Vasco Rossi");
             for (Artist artist : artists) {
                 System.out.println("artist:" + artist.getName());
@@ -42,7 +52,10 @@ public class Test {
             }
             List<Label> labels = query.findLabels("EMI Music (Italy)");
             for (Label label : labels) {
-                System.out.println("label:" + label.getName());
+                List<Object> objects = label.getContent();
+                for (Object object : objects) {
+                     System.out.println("labels: "+object.toString());
+                }
             }
         } catch (JDiscogsException ex) {
             ex.printStackTrace();

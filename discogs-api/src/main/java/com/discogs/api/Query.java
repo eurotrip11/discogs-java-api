@@ -111,6 +111,9 @@ public class Query {
         return artists;
     }
 
+    public List<Release> findReleases(String artist, String title) throws JDiscogsException {
+        return findReleases(artist.concat(" ").concat(title));
+    }
     public List<Release> findReleases(String name) throws JDiscogsException {
         List<Release> releases = new ArrayList<Release>();
         List<Result> results = new ArrayList<Result>();
