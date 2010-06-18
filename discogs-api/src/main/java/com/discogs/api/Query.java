@@ -1,9 +1,23 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Discogs Java Api 1.0-SNAPSHOT
+ * Copyright (C) 2010 Giuseppe Trisciuoglio
+ *
+ * http://code.google.com/p/discogs-java-api/
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  */
+
 package com.discogs.api;
 
+import com.discogs.api.webservice.results.ReleaseSearchResults;
 import com.discogs.api.exception.JDiscogsException;
 import com.discogs.api.exception.WebServiceException;
 import com.discogs.api.model.Artist;
@@ -14,16 +28,15 @@ import com.discogs.api.model.Resp;
 import com.discogs.api.model.Result;
 import com.discogs.api.model.Searchresults;
 import com.discogs.api.webservice.WebService;
-import com.discogs.api.webservice.impl.HttpWebService;
+import com.discogs.api.webservice.filter.ArtistFilter;
+import com.discogs.api.webservice.filter.ReleaseFilter;
+import com.discogs.api.webservice.impl.HttpClientWebService;
+import com.discogs.api.webservice.results.ArtistSearchResults;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author nexse
- */
 public class Query {
 
     private WebService webService;
@@ -35,7 +48,7 @@ public class Query {
     public static final String ALL_TYPE = "all";
 
     public Query() {
-        webService = new HttpWebService();
+        webService = new HttpClientWebService();
     }
 
     public Query(WebService webService) {
@@ -86,7 +99,11 @@ public class Query {
         return label;
     }
 
-    public List<Artist> findArtists(String name) throws JDiscogsException {
+    public ArtistSearchResults findArtists(ArtistFilter artistFilter) throws JDiscogsException {
+        return null;
+    }
+
+    private List<Artist> findArtists(String name) throws JDiscogsException {
         List<Artist> artists = new ArrayList<Artist>();
         List<Result> results = new ArrayList<Result>();
         try {
@@ -111,10 +128,14 @@ public class Query {
         return artists;
     }
 
-    public List<Release> findReleases(String artist, String title) throws JDiscogsException {
+    public ReleaseSearchResults findReleases(ReleaseFilter releaseFilter) throws JDiscogsException {
+        return null;
+    }
+
+    private List<Release> findReleases(String artist, String title) throws JDiscogsException {
         return findReleases(artist.concat(" ").concat(title));
     }
-    public List<Release> findReleases(String name) throws JDiscogsException {
+    private List<Release> findReleases(String name) throws JDiscogsException {
         List<Release> releases = new ArrayList<Release>();
         List<Result> results = new ArrayList<Result>();
         try {
