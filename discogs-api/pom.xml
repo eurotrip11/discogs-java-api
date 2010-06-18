@@ -29,7 +29,7 @@
         </developer>
     </developers>
     <scm>
-        <connection>https://discogs-java-api.googlecode.com/svn/jquery4jsf/trunk/</connection>
+        <connection>https://discogs-java-api.googlecode.com/svn/trunk/discogs-api/</connection>
         <url>http://discogs-java-api.googlecode.com/svn/trunk/discogs-api/</url>
     </scm>
     <properties>
