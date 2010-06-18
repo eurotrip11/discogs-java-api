@@ -15,23 +15,28 @@
  * GNU General Public License for more details.
  */
 
-package com.discogs.api.exception;
+package com.discogs.api.webservice.results;
 
-public class ResourceNotFoundException extends WebServiceException {
+import java.util.ArrayList;
+import java.util.List;
 
-    private String response;
 
-    public ResourceNotFoundException(String message) {
-        super(message);
+public class ArtistSearchResults extends ListResults {
+
+    private List<ArtistResult> artists = new ArrayList<ArtistResult>();
+
+    public List<ArtistResult> getArtistResults() {
+        return artists;
     }
 
-    public ResourceNotFoundException(String message, String response) {
-        super(message);
-        this.response = response;
+    public void setArtistResults(List<ArtistResult> artists) {
+        this.artists = artists;
     }
 
-    public String getResponse() {
-        return response;
+    public boolean addArtist(ArtistResult artist){
+        if (artists == null){
+            artists = new ArrayList<ArtistResult>();
+        }
+        return artists.add(artist);
     }
-
 }

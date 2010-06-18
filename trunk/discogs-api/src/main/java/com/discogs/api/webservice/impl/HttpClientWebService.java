@@ -1,7 +1,20 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Discogs Java Api 1.0-SNAPSHOT
+ * Copyright (C) 2010 Giuseppe Trisciuoglio
+ *
+ * http://code.google.com/p/discogs-java-api/
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  */
+
 package com.discogs.api.webservice.impl;
 
 import com.discogs.api.exception.AuthorizationException;
@@ -25,21 +38,17 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author nexse
- */
-public class HttpWebService extends DefaultWebService {
+public class HttpClientWebService extends DefaultWebService {
 
     private HttpClient httpClient;
     private Logger logger = LoggerFactory.getLogger(HttpClient.class);
 
-    public HttpWebService() {
+    public HttpClientWebService() {
         httpClient = new HttpClient();
         initConfiguration();
     }
 
-    public HttpWebService(HttpClient httpClient) {
+    public HttpClientWebService(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

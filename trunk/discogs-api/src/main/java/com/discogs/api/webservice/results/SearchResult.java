@@ -15,23 +15,18 @@
  * GNU General Public License for more details.
  */
 
-package com.discogs.api.exception;
+package com.discogs.api.webservice.results;
 
-public class ResourceNotFoundException extends WebServiceException {
+public class SearchResult {
 
-    private String response;
+    private Integer score;
 
-    public ResourceNotFoundException(String message) {
-        super(message);
+    public Integer getScore() {
+        return score;
     }
 
-    public ResourceNotFoundException(String message, String response) {
-        super(message);
-        this.response = response;
-    }
-
-    public String getResponse() {
-        return response;
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
 }

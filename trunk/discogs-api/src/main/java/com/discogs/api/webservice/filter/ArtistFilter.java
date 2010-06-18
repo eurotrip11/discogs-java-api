@@ -15,23 +15,27 @@
  * GNU General Public License for more details.
  */
 
-package com.discogs.api.exception;
+package com.discogs.api.webservice.filter;
 
-public class ResourceNotFoundException extends WebServiceException {
+public class ArtistFilter extends DefaultFilter {
 
-    private String response;
+    private String artistName;
 
-    public ResourceNotFoundException(String message) {
-        super(message);
+    public ArtistFilter(String artistName) {
+        this.artistName = artistName;
     }
 
-    public ResourceNotFoundException(String message, String response) {
-        super(message);
-        this.response = response;
+    public ArtistFilter(String artistName, long limit, long offset) {
+        super(limit, offset);
+        this.artistName = artistName;
     }
 
-    public String getResponse() {
-        return response;
+    public String getArtistName() {
+        return artistName;
+    }
+
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
     }
 
 }

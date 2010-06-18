@@ -15,23 +15,11 @@
  * GNU General Public License for more details.
  */
 
-package com.discogs.api.exception;
 
-public class ResourceNotFoundException extends WebServiceException {
 
-    private String response;
+package com.discogs.api.webservice.includes;
 
-    public ResourceNotFoundException(String message) {
-        super(message);
-    }
 
-    public ResourceNotFoundException(String message, String response) {
-        super(message);
-        this.response = response;
-    }
-
-    public String getResponse() {
-        return response;
-    }
+public class TrackIncludes extends DefaultIncludes {
 
 }

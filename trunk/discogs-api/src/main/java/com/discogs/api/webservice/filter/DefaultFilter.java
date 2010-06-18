@@ -15,23 +15,35 @@
  * GNU General Public License for more details.
  */
 
-package com.discogs.api.exception;
+package com.discogs.api.webservice.filter;
 
-public class ResourceNotFoundException extends WebServiceException {
+public abstract class DefaultFilter implements Filter{
 
-    private String response;
+    private long limit;
+    private long offset;
 
-    public ResourceNotFoundException(String message) {
-        super(message);
+    public DefaultFilter() {
     }
 
-    public ResourceNotFoundException(String message, String response) {
-        super(message);
-        this.response = response;
+    public DefaultFilter(long limit, long offset) {
+        this.limit = limit;
+        this.offset = offset;
     }
 
-    public String getResponse() {
-        return response;
+    public long getLimit() {
+        return limit;
+    }
+
+    public void setLimit(long limit) {
+        this.limit = limit;
+    }
+
+    public long getOffset() {
+        return offset;
+    }
+
+    public void setOffset(long offset) {
+        this.offset = offset;
     }
 
 }

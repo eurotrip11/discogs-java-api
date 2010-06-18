@@ -1,25 +1,31 @@
+/*
+ * Discogs Java Api 1.0-SNAPSHOT
+ * Copyright (C) 2010 Giuseppe Trisciuoglio
+ *
+ * http://code.google.com/p/discogs-java-api/
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.discogs.api;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 import com.discogs.api.exception.JDiscogsException;
 import com.discogs.api.model.Artist;
 import com.discogs.api.model.Label;
 import com.discogs.api.model.Release;
-import com.discogs.api.webservice.impl.HttpWebService;
+import com.discogs.api.webservice.impl.HttpClientWebService;
 import java.util.List;
-import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.ProxyClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
 
-/**
- *
- * @author nexse
- */
+
 public class Test {
 
     public static void main(String[] args) {
@@ -32,7 +38,7 @@ public class Test {
             Label label = query.getLabel("Svek");
             System.out.println(label.getName());*/
             HttpClient client = new HttpClient();
-            HttpWebService ser =  (HttpWebService) query.getWebService();
+            HttpClientWebService ser =  (HttpClientWebService) query.getWebService();
 //            HostConfiguration configuration = new HostConfiguration();
 //            configuration.setProxy("218.248.44.216", 8080);
 //            client.setHostConfiguration(configuration);
