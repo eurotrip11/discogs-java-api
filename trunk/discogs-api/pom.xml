@@ -6,9 +6,35 @@
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>discogs-api</name>
-    <url>http://maven.apache.org</url>
-
-
+    <url>http://code.google.com/p/discogs-java-api/</url>
+    <licenses>
+        <license>
+            <name>GNU General Public License, version 2 or later</name>
+            <url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+        </license>
+    </licenses>
+    <inceptionYear>2010</inceptionYear>
+    <issueManagement>
+        <system>Google Code</system>
+        <url>https://code.google.com/p/discogs-java-api/issues/list</url>
+    </issueManagement>
+    <developers>
+        <developer>
+            <id>giuseppe.trisciuoglio</id>
+            <name>Giuseppe Trisciuoglio</name>
+            <email>giuseppe.trisciuoglio@gmail.com</email>
+            <roles>
+                <role>Owner</role>
+            </roles>
+        </developer>
+    </developers>
+    <scm>
+        <connection>https://discogs-java-api.googlecode.com/svn/jquery4jsf/trunk/</connection>
+        <url>http://discogs-java-api.googlecode.com/svn/trunk/discogs-api/</url>
+    </scm>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -34,16 +60,18 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.5.6</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.12.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -67,6 +95,33 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.5.1</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <header>${basedir}/header.txt</header>
+                    <includes>
+                        <include>**/**.java</include>
+                    </includes>
+                    <aggregate>true</aggregate>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+                    <properties>
+                        <year>2010</year>
+                        <version>${project.version}</version>
+                    </properties>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -77,3 +132,4 @@
         </plugins>
     </build>
 </project>
+
