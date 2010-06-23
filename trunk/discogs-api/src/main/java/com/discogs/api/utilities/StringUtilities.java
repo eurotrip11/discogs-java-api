@@ -15,15 +15,25 @@
  * GNU General Public License for more details.
  */
 
-package com.discogs.api.webservice;
 
-import com.discogs.api.exception.WebServiceException;
-import com.discogs.api.model.Resp;
-import java.util.Map;
 
-public interface WebService {
+package com.discogs.api.utilities;
 
-    public Resp get(String entity, String type, Map<String, String> params) throws WebServiceException;
-    public void post();
+
+public final class StringUtilities {
+
+    public static boolean isBlank(String value){
+        if (value == null || value.trim().equals("")){
+            return true;
+        }
+        return false;
+    }
+
+    public static String replaceWhiteSpace(String value){
+        if (!isBlank(value)){
+            return value.trim().replaceAll(" ", "+");
+        }
+        return null;
+    }
 
 }

@@ -15,15 +15,29 @@
  * GNU General Public License for more details.
  */
 
-package com.discogs.api.webservice;
 
-import com.discogs.api.exception.WebServiceException;
-import com.discogs.api.model.Resp;
-import java.util.Map;
 
-public interface WebService {
+package com.discogs.api.webservice.results;
 
-    public Resp get(String entity, String type, Map<String, String> params) throws WebServiceException;
-    public void post();
+import com.discogs.api.model.Label;
 
+
+public class LabelResult extends SearchResult {
+
+    private Label label;
+
+    public LabelResult() {
+    }
+
+    public LabelResult(Label label) {
+        this.label = label;
+    }
+
+    public Label getLabel() {
+        return label;
+    }
+
+    public void setLabel(Label label) {
+        this.label = label;
+    }
 }

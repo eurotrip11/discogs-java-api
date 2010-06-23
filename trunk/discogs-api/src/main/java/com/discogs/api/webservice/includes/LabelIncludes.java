@@ -15,15 +15,11 @@
  * GNU General Public License for more details.
  */
 
-package com.discogs.api.webservice;
 
-import com.discogs.api.exception.WebServiceException;
-import com.discogs.api.model.Resp;
-import java.util.Map;
 
-public interface WebService {
+package com.discogs.api.webservice.includes;
 
-    public Resp get(String entity, String type, Map<String, String> params) throws WebServiceException;
-    public void post();
+
+public class LabelIncludes extends DefaultIncludes {
 
 }

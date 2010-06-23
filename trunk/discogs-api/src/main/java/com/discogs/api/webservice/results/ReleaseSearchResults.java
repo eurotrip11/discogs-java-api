@@ -17,6 +17,40 @@
 
 package com.discogs.api.webservice.results;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReleaseSearchResults extends ListResults {
 
+    private List<ReleaseResult> releaseResults = new ArrayList<ReleaseResult>();
+
+    private long exactCount;
+
+    public ReleaseSearchResults(int pageNumber, int totalCount)
+    {
+        super(pageNumber, ListResults.DEFAULT_PAGE_SIZE, totalCount);
+    }
+
+    public long getExactCount() {
+        return exactCount;
+    }
+
+    public void setExactCount(long exactCount) {
+        this.exactCount = exactCount;
+    }
+
+    public List<ReleaseResult> getReleaseResults() {
+        return releaseResults;
+    }
+
+    public void setReleaseResults(List<ReleaseResult> releaseResults) {
+        this.releaseResults = releaseResults;
+    }
+
+    public boolean addReleaseResult(ReleaseResult releaseResult){
+        if (releaseResults == null){
+            releaseResults = new ArrayList<ReleaseResult>();
+        }
+        return releaseResults.add(releaseResult);
+    }
 }

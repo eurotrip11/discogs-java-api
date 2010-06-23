@@ -14,36 +14,44 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
 package com.discogs.api.webservice.filter;
 
-public abstract class DefaultFilter implements Filter{
+import java.util.HashMap;
+import java.util.Map;
 
-    private long limit;
-    private long offset;
+public abstract class DefaultFilter implements Filter {
+
+    private int limit;
+    private int pageNumber;
 
     public DefaultFilter() {
     }
 
-    public DefaultFilter(long limit, long offset) {
+    public DefaultFilter(int limit, int pageNumber) {
         this.limit = limit;
-        this.offset = offset;
     }
 
     public long getLimit() {
         return limit;
     }
 
-    public void setLimit(long limit) {
+    public void setLimit(int limit) {
         this.limit = limit;
     }
 
-    public long getOffset() {
-        return offset;
+    public int getPageNumber() {
+        return pageNumber;
     }
 
-    public void setOffset(long offset) {
-        this.offset = offset;
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
     }
 
+    public Map<String, String> createParams() {
+        Map<String, String> map = new HashMap<String, String>();
+        if (getPageNumber() > 0){
+            map.put("page", Integer.toString(getPageNumber()));
+        }
+        return map;
+    }
 }

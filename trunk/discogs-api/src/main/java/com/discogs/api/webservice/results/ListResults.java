@@ -19,32 +19,71 @@ package com.discogs.api.webservice.results;
 
 
 public abstract class ListResults {
+    
+    private int offset;
 
-    private Long count;
-    private Long offset;
+    private int pageSize;
 
-    public ListResults() {
+    private int count;
+
+    public static final int DEFAULT_PAGE_NUM = 1;
+
+    public static final int DEFAULT_PAGE_SIZE = 20;
+
+
+
+    public ListResults(int pageNumber, int pageSize, int totalCount) {
+        this.count = totalCount;
+        if (pageSize < 1)
+            this.pageSize = 2;
+        else
+            this.pageSize = pageSize;
+        if (pageNumber < 1)
+            this.offset = 1;
+        else if (pageNumber > getMaxPageNumber())
+            this.offset = getMaxPageNumber();
+        else
+            this.offset = pageNumber;
     }
 
-    public ListResults(Long count, Long offset) {
-        this.count = count;
-        this.offset = offset;
+
+    public int getFirstPageNumber() {
+        return 1;
     }
 
-    public Long getCount() {
-        return count;
+    public int getMaxPageNumber() {
+        if (getCount() < getPageSize()) {
+            return 1;
+        } else {
+            int remainder = getCount() % getPageSize();
+            int quotient = getCount() / getPageSize();
+            return remainder != 0 ? quotient + 1 : quotient;
+        }
     }
 
-    public void setCount(Long count) {
-        this.count = count;
+    public int getNextPageNumber() {
+        if (getPageNumber() == getMaxPageNumber())
+            return getMaxPageNumber();
+        else
+            return getPageNumber() + 1;
     }
 
-    public Long getOffset() {
+    public int getPreviousPageNumber() {
+        if (getPageNumber() == 1)
+            return getPageNumber();
+        else
+            return getPageNumber() - 1;
+    }
+
+    public int getPageNumber() {
         return offset;
     }
 
-    public void setOffset(Long offset) {
-        this.offset = offset;
+    public int getPageSize() {
+        return pageSize;
     }
 
+    public int getCount() {
+        return count;
+    }
 }

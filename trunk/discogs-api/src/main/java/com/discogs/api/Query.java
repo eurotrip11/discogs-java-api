@@ -17,6 +17,7 @@
 
 package com.discogs.api;
 
+import com.discogs.api.common.DiscogsCostants;
 import com.discogs.api.webservice.results.ReleaseSearchResults;
 import com.discogs.api.exception.JDiscogsException;
 import com.discogs.api.exception.WebServiceException;
@@ -29,11 +30,21 @@ import com.discogs.api.model.Result;
 import com.discogs.api.model.Searchresults;
 import com.discogs.api.webservice.WebService;
 import com.discogs.api.webservice.filter.ArtistFilter;
+import com.discogs.api.webservice.filter.LabelFilter;
 import com.discogs.api.webservice.filter.ReleaseFilter;
 import com.discogs.api.webservice.impl.HttpClientWebService;
+import com.discogs.api.webservice.includes.ArtistIncludes;
+import com.discogs.api.webservice.includes.LabelIncludes;
+import com.discogs.api.webservice.includes.ReleaseIncludes;
+import com.discogs.api.webservice.results.ArtistResult;
 import com.discogs.api.webservice.results.ArtistSearchResults;
-import java.util.ArrayList;
+import com.discogs.api.webservice.results.LabelResult;
+import com.discogs.api.webservice.results.LabelSearchResults;
+import com.discogs.api.webservice.results.ReleaseResult;
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +55,7 @@ public class Query {
     public static final String RELEASE_TYPE = "releases";
     public static final String ARTIST_TYPE = "artists";
     public static final String LABEL_TYPE = "labels";
-    public static final String CATNO = "catno";
-    public static final String ALL_TYPE = "all";
-
+    
     public Query() {
         webService = new HttpClientWebService();
     }
@@ -64,9 +73,15 @@ public class Query {
     }
 
     public Artist getArtist(String name) throws JDiscogsException {
+        return getArtist(name, null);
+    }
+
+    private Artist getArtist(String name, ArtistIncludes artistIncludes) throws JDiscogsException {
         Artist artist = null;
         try {
-            Resp resp = getWebService().get("artist", null, new String[]{name});
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("q", name);
+            Resp resp = getWebService().get("artist", null, params);
             artist = resp.getArtist();
         } catch (WebServiceException e) {
             logger.error(e.getMessage());
@@ -74,11 +89,17 @@ public class Query {
         }
         return artist;
     }
-
+    
     public Release getRelease(String id) throws JDiscogsException {
+        return getRelease(id, null);
+    }
+    
+    private Release getRelease(String id, ReleaseIncludes releaseIncludes) throws JDiscogsException {
         Release release = null;
         try {
-            Resp resp = getWebService().get("release", null, new String[]{id});
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("q", id);
+            Resp resp = getWebService().get("release", null, params);
             release = resp.getRelease();
         } catch (WebServiceException e) {
             logger.error(e.getMessage());
@@ -86,11 +107,16 @@ public class Query {
         }
         return release;
     }
-
     public Label getLabel(String name) throws JDiscogsException {
+        return getLabel(name, null);
+    }
+    
+    private Label getLabel(String name, LabelIncludes labelIncludes) throws JDiscogsException {
         Label label = null;
         try {
-            Resp resp = getWebService().get("label", null, new String[]{name});
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("q", name);
+            Resp resp = getWebService().get("label", null, params);
             label = resp.getLabel();
         } catch (WebServiceException e) {
             logger.error(e.getMessage());
@@ -100,91 +126,137 @@ public class Query {
     }
 
     public ArtistSearchResults findArtists(ArtistFilter artistFilter) throws JDiscogsException {
-        return null;
-    }
-
-    private List<Artist> findArtists(String name) throws JDiscogsException {
-        List<Artist> artists = new ArrayList<Artist>();
-        List<Result> results = new ArrayList<Result>();
+        ArtistSearchResults artistSearchResults = null;
         try {
-            Resp resp = getWebService().get(null, ARTIST_TYPE, new String[]{name});
-            Searchresults searchresults = resp.getSearchresults();
-            Exactresults exactresults = resp.getExactresults();
-            if (exactresults != null && exactresults.getResult() != null){
-                results.addAll(exactresults.getResult());
+            Resp resp = getWebService().get(null, ARTIST_TYPE, artistFilter.createParams());
+            Searchresults searchResults = resp.getSearchresults();
+            int count = 0;
+            if (searchResults != null && searchResults.getNumResults() != null){
+                count = searchResults.getNumResults().intValue();
             }
-            if (exactresults == null && searchresults.getResult() != null){
-                 results.addAll(searchresults.getResult());
-            }
-            for (Result result : results) {
-                if (isArtist(result)) {
-                    artists.add(getArtist(result.getTitle()));
+            int pageNumber = artistFilter.getPageNumber();
+            artistSearchResults = new ArtistSearchResults(pageNumber, count);
+            Exactresults exactResults = resp.getExactresults();
+            if (exactResults != null && exactResults.getResult() != null) {
+                List<Result> results = exactResults.getResult();
+                artistSearchResults.setExactCount(results.size());
+                for (Result result : results) {
+                    ArtistResult artistResult = new ArtistResult();
+                    artistResult.setOffset(result.getNum().longValue());
+                    artistResult.setScore(DiscogsCostants.SCORE_EXACT);
+                    artistResult.setArtist(new Artist());
+                    artistResult.getArtist().setName(result.getTitle());
+                    artistSearchResults.addArtistResult(artistResult);
                 }
             }
+            if (searchResults != null && searchResults.getResult() != null) {
+                List<Result> results = searchResults.getResult();
+                int i =1;
+                for (Result result : results) {
+                    ArtistResult artistResult = new ArtistResult();
+                    artistResult.setOffset(result.getNum().longValue());
+                    //TODO score discogs no know
+                    artistResult.setScore(0);
+                    artistResult.setArtist(new Artist());
+                    artistResult.getArtist().setName(result.getTitle());
+                    artistSearchResults.addArtistResult(artistResult);
+                    i++;
+                }
+            }
+
         } catch (WebServiceException e) {
             logger.error(e.getMessage());
             throw new JDiscogsException(e.getMessage(), e);
         }
-        return artists;
+        return artistSearchResults;
     }
 
     public ReleaseSearchResults findReleases(ReleaseFilter releaseFilter) throws JDiscogsException {
-        return null;
-    }
-
-    private List<Release> findReleases(String artist, String title) throws JDiscogsException {
-        return findReleases(artist.concat(" ").concat(title));
-    }
-    private List<Release> findReleases(String name) throws JDiscogsException {
-        List<Release> releases = new ArrayList<Release>();
-        List<Result> results = new ArrayList<Result>();
+        ReleaseSearchResults releaseSearchResults = null;
         try {
-            Resp resp = getWebService().get(null, RELEASE_TYPE, new String[]{name});
-            Searchresults searchresults = resp.getSearchresults();
-            Exactresults exactresults = resp.getExactresults();
-            if (exactresults != null
-                    && exactresults.getResult() != null){
-                results.addAll(exactresults.getResult());
+            Resp resp = getWebService().get(null, RELEASE_TYPE, releaseFilter.createParams());
+            int count = 0;
+            Searchresults searchResults = resp.getSearchresults();
+            Exactresults exactResults = resp.getExactresults();
+            if (searchResults != null && searchResults.getNumResults() != null){
+                count = searchResults.getNumResults().intValue();
             }
-            if (exactresults == null && searchresults.getResult() != null){
-                 results.addAll(searchresults.getResult());
-            }
-            for (Result result : results) {
-                if (isRelease(result)) {
+            releaseSearchResults = new ReleaseSearchResults(releaseFilter.getPageNumber(), count);
+            if (exactResults != null && exactResults.getResult() != null){
+                releaseSearchResults.setExactCount(exactResults.getResult().size());
+                for (Result result : exactResults.getResult()) {
+                    ReleaseResult releaseResult = new ReleaseResult();
+                    releaseResult.setOffset(result.getNum().longValue());
+                    releaseResult.setScore(DiscogsCostants.SCORE_EXACT);
                     String uri = result.getUri();
-                    releases.add(getRelease(uri.substring(uri.lastIndexOf("/") + 1, uri.length())));
+                    Release release = new Release();
+                    BigInteger id = BigInteger.valueOf(Long.valueOf(uri.substring(uri.lastIndexOf("/") + 1, uri.length())));
+                    release.setId(id);
+                    release.setTitle(result.getTitle());
+                    releaseResult.setRelease(release);
+                    releaseSearchResults.addReleaseResult(releaseResult);
+                }
+            }
+            if (searchResults != null && searchResults.getResult() != null){
+                for (Result result : searchResults.getResult()) {
+                    ReleaseResult releaseResult = new ReleaseResult();
+                    releaseResult.setOffset(result.getNum().longValue());
+                    releaseResult.setScore(0);
+                    String uri = result.getUri();
+                    Release release = new Release();
+                    BigInteger id = BigInteger.valueOf(Long.valueOf(uri.substring(uri.lastIndexOf("/") + 1, uri.length())));
+                    release.setId(id);
+                    release.setTitle(result.getTitle());
+                    releaseResult.setRelease(release);
+                    releaseSearchResults.addReleaseResult(releaseResult);
                 }
             }
         } catch (WebServiceException e) {
             logger.error(e.getMessage());
             throw new JDiscogsException(e.getMessage(), e);
         }
-        return releases;
+        return releaseSearchResults;
     }
 
-    public List<Label> findLabels(String name) throws JDiscogsException {
-        List<Label> labels = new ArrayList<Label>();
-        List<Result> results = new ArrayList<Result>();
+    public LabelSearchResults findLabels(LabelFilter labelFilter) throws JDiscogsException {
+        LabelSearchResults labelSearchResult = null;
         try {
-            Resp resp = getWebService().get(null, LABEL_TYPE, new String[]{name});
-            Searchresults searchresults = resp.getSearchresults();
-            Exactresults exactresults = resp.getExactresults();
-            if (exactresults != null && exactresults.getResult() != null){
-                results.addAll(exactresults.getResult());
+            Resp resp = getWebService().get(null, LABEL_TYPE, labelFilter.createParams());
+            Searchresults searchResults = resp.getSearchresults();
+            Exactresults exactResults = resp.getExactresults();
+            int count = 0;
+            if (searchResults != null && searchResults.getNumResults() != null){
+                count = searchResults.getNumResults().intValue();
             }
-            if (exactresults == null && searchresults.getResult() != null){
-                 results.addAll(searchresults.getResult());
+            labelSearchResult = new LabelSearchResults(labelFilter.getPageNumber(), count);
+            if (exactResults != null && exactResults.getResult() != null){
+                labelSearchResult.setExactCount(exactResults.getResult().size());
+                for (Result result : exactResults.getResult()) {
+                    LabelResult labelResult = new LabelResult();
+                    labelResult.setOffset(result.getNum().longValue());
+                    labelResult.setScore(DiscogsCostants.SCORE_EXACT);
+                    Label label = new Label();
+                    label.setName(result.getTitle());
+                    labelResult.setLabel(label);
+                    labelSearchResult.addLabelResult(labelResult);
+                }
             }
-            for (Result result : results) {
-                if (isLabel(result)){
-                    labels.add(getLabel(result.getTitle()));
+            if (searchResults != null && searchResults.getResult() != null) {
+                for (Result result : searchResults.getResult()) {
+                    LabelResult labelResult = new LabelResult();
+                    labelResult.setOffset(result.getNum().longValue());
+                    labelResult.setScore(0);
+                    Label label = new Label();
+                    label.setName(result.getTitle());
+                    labelResult.setLabel(label);
+                    labelSearchResult.addLabelResult(labelResult);
                 }
             }
         } catch (WebServiceException e) {
             logger.error(e.getMessage());
             throw new JDiscogsException(e.getMessage(), e);
         }
-        return labels;
+        return labelSearchResult;
     }
 
     private boolean isArtist(Result result) {

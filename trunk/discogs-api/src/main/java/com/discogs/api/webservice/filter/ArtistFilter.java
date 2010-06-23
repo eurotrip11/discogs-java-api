@@ -14,8 +14,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
 package com.discogs.api.webservice.filter;
+
+import com.discogs.api.utilities.StringUtilities;
+import java.util.Map;
 
 public class ArtistFilter extends DefaultFilter {
 
@@ -25,8 +27,8 @@ public class ArtistFilter extends DefaultFilter {
         this.artistName = artistName;
     }
 
-    public ArtistFilter(String artistName, long limit, long offset) {
-        super(limit, offset);
+    public ArtistFilter(String artistName, int limit, int pageNumber) {
+        super(limit, pageNumber);
         this.artistName = artistName;
     }
 
@@ -38,4 +40,16 @@ public class ArtistFilter extends DefaultFilter {
         this.artistName = artistName;
     }
 
+    @Override
+    public Map<String, String> createParams() {
+        Map<String, String> params = super.createParams();
+        if (!StringUtilities.isBlank(getArtistName())) {
+            params.put("q", StringUtilities.replaceWhiteSpace(getArtistName()));
+        } else {
+            if (!params.containsKey("q")) {
+                throw new IllegalArgumentException("This filter must specify an artist name!");
+            }
+        }
+        return params;
+    }
 }
