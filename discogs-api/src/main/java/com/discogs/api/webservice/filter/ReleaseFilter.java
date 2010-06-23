@@ -17,6 +17,10 @@
 
 package com.discogs.api.webservice.filter;
 
+import com.discogs.api.utilities.StringUtilities;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ReleaseFilter extends DefaultFilter {
 
     private String artistName;
@@ -48,6 +52,28 @@ public class ReleaseFilter extends DefaultFilter {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public Map<String, String> createParams() {
+        Map<String, String> params = super.createParams();
+        Map<String, String> paramsLocal = new HashMap<String, String>();
+        if (!StringUtilities.isBlank(getTitle())) {
+            paramsLocal.put("q", StringUtilities.replaceWhiteSpace(getTitle()));
+        }
+        if (!StringUtilities.isBlank(getArtistName())) {
+            if (paramsLocal.containsKey("q")){
+                String param = paramsLocal.get("q");
+                paramsLocal.put("q", StringUtilities.replaceWhiteSpace(param.concat(" ").concat(getArtistName())));
+            }
+            else
+                paramsLocal.put("q", StringUtilities.replaceWhiteSpace(getArtistName()));
+        }
+        if (!params.containsKey("q") && paramsLocal.isEmpty()) {
+            throw new IllegalArgumentException("This filter must specify an artist name or title!");
+        }
+        params.putAll(paramsLocal);
+        return params;
     }
 
 }

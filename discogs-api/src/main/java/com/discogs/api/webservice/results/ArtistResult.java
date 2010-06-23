@@ -24,6 +24,9 @@ public class ArtistResult extends SearchResult {
 
     private Artist artist;
 
+    public ArtistResult() {
+    }
+
     public ArtistResult(Artist artist) {
         this.artist = artist;
     }

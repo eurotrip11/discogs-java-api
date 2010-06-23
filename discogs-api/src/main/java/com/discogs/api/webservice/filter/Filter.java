@@ -17,6 +17,10 @@
 
 package com.discogs.api.webservice.filter;
 
+import java.util.Map;
+
 public interface Filter {
 
+    public Map<String, String> createParams();
+    
 }

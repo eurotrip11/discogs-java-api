@@ -15,20 +15,20 @@
  * GNU General Public License for more details.
  */
 
+
+
 package com.discogs.api.webservice.results;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ArtistSearchResults extends ListResults {
+public class LabelSearchResults extends ListResults {
 
-    private List<ArtistResult> artists = new ArrayList<ArtistResult>();
-
+    private List<LabelResult> labelResults = new ArrayList<LabelResult>();
     private long exactCount;
 
-    public ArtistSearchResults(int pageNumber, int totalCount)
-    {
+    public LabelSearchResults(int pageNumber, int totalCount) {
         super(pageNumber, ListResults.DEFAULT_PAGE_SIZE, totalCount);
     }
 
@@ -40,18 +40,20 @@ public class ArtistSearchResults extends ListResults {
         this.exactCount = exactCount;
     }
 
-    public List<ArtistResult> getArtistResults() {
-        return artists;
+    public List<LabelResult> getLabelResults() {
+        return labelResults;
     }
 
-    public void setArtistResults(List<ArtistResult> artists) {
-        this.artists = artists;
+    public void setLabelResults(List<LabelResult> labelResults) {
+        this.labelResults = labelResults;
     }
 
-    public boolean addArtistResult(ArtistResult artist){
-        if (artists == null){
-            artists = new ArrayList<ArtistResult>();
+
+    public boolean addLabelResult(LabelResult labelResult){
+        if (labelResults == null){
+            labelResults = new ArrayList<LabelResult>();
         }
-        return artists.add(artist);
+        return labelResults.add(labelResult);
     }
+
 }

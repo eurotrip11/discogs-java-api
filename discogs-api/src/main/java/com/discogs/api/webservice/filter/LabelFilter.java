@@ -19,36 +19,36 @@
 
 package com.discogs.api.webservice.filter;
 
+import com.discogs.api.utilities.StringUtilities;
 import java.util.Map;
 
 
-public class TrackFilter extends DefaultFilter {
+public class LabelFilter extends DefaultFilter {
 
-    private String title;
-    private String artistName;
+    private String name;
 
-    public TrackFilter() {
+    public String getName() {
+        return name;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getArtistName() {
-        return artistName;
-    }
-
-    public void setArtistName(String artistName) {
-        this.artistName = artistName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public Map<String, String> createParams() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Map<String, String> params = super.createParams();
+        if (!StringUtilities.isBlank(getName())) {
+            params.put("q", StringUtilities.replaceWhiteSpace(getName()));
+        } else {
+            if (!params.containsKey("q")) {
+                throw new IllegalArgumentException("This filter must specify an label name!");
+            }
+        }
+        return params;
+        
     }
+
+    
 
 }

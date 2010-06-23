@@ -21,12 +21,22 @@ public class SearchResult {
 
     private Integer score;
 
+    private Long offset;
+
     public Integer getScore() {
         return score;
     }
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public Long getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Long offset) {
+        this.offset = offset;
     }
 
 }
